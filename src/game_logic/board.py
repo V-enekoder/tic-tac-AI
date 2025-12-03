@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 import numpy as np
 
 from src.config import BOARD_COLS, BOARD_ROWS
@@ -64,3 +66,12 @@ class Board:
             return True
 
         return False
+
+    def get_available_moves(self) -> List[Tuple[int, int]]:
+        """Retorna una lista de tuplas (fila, col) para las casillas vacías."""
+        moves: List[Tuple[int, int]] = []
+        for row in range(BOARD_ROWS):
+            for col in range(BOARD_COLS):
+                if self.board[row][col] == 0:
+                    moves.append((row, col))
+        return moves

@@ -1,12 +1,31 @@
+from typing import List
+
 import pygame
 
 from src.config import *
 
 
 class Renderer:
-    def __init__(self, screen):
-        self.screen = screen
-        self.font = pygame.font.Font(None, FONT_SIZE)
+    def __init__(self, screen: pygame.Surface) -> None:
+        self.screen: pygame.Surface = screen
+        self.font: pygame.font.Font = pygame.font.Font(None, 45)
+        self.menu_font: pygame.font.Font = pygame.font.Font(None, MENU_FONT_SIZE)
+
+    def draw_menu(self, options: List[str], selected_option: int) -> None:
+        """Dibuja la pantalla del menú principal."""
+        self.screen.fill(BG_COLOR)
+
+        # Título
+        title_text = self.menu_font.render("Tres en Raya", True, FONT_COLOR)
+        title_rect = title_text.get_rect(center=(WIDTH // 2, HEIGHT // 4))
+        self.screen.blit(title_text, title_rect)
+
+        # Opciones del menú
+        for i, option in enumerate(options):
+            color = MENU_SELECTED_COLOR if i == selected_option else FONT_COLOR
+            text = self.font.render(option, True, color)
+            rect = text.get_rect(center=(WIDTH // 2, HEIGHT / 2 + i * (FONT_SIZE + 20)))
+            self.screen.blit(text, rect)
 
     def draw_grid(self):
         """Dibuja las líneas del tablero."""
