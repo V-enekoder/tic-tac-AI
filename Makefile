@@ -18,6 +18,7 @@ help:
 	@printf "  \033[36m%-15s\033[0m %s\n" "start" "Inicia el contenedor si está detenido (sin reconstruir)."
 	@printf "  \033[36m%-15s\033[0m %s\n" "stop" "Detiene y elimina el contenedor y la red."
 	@printf "  \033[36m%-15s\033[0m %s\n" "run" "Ejecuta la aplicación principal (src/main.py)."
+	@printf "  \033[36m%-15s\033[0m %s\n" "run" "Ejecuta las simulaciones (src/simulate.py)."
 	@echo ""
 	@echo "🛠️ Targets de Desarrollo:"
 	@printf "  \033[36m%-15s\033[0m %s\n" "install" "Instala/sincroniza las dependencias de pyproject.toml."
@@ -48,6 +49,19 @@ run: ## Ejecuta el script principal
 	@xhost +local:
 	@echo "-> Ejecutando el juego..."
 	@podman exec -it $(CONTAINER_NAME) uv run src/main.py
+
+simulate: ## Ejecuta una simulación de N partidas para recolectar datos
+	@echo "-> Iniciando la simulación estadística (esto puede tardar)..."
+	@podman exec -it $(CONTAINER_NAME) uv run src/simulate.py
+
+notebook: ## Lanza un servidor de Jupyter Lab para el análisis de datos
+	@echo "-> Lanzando servidor de Jupyter Lab..."
+	@echo "-> Copia la URL que aparecerá a continuación en tu navegador."
+	@podman exec -it $(CONTAINER_NAME) jupyter lab \
+		--ip=0.0.0.0 \
+		--port=8888 \
+		--no-browser \
+		--allow-root
 
 install: ## Sincroniza las dependencias
 	@echo "-> Sincronizando dependencias con uv..."

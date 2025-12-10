@@ -11,7 +11,7 @@ class Renderer:
         self.screen: pygame.Surface = screen
         self.font: pygame.font.Font = pygame.font.Font(None, 45)
         self.menu_font: pygame.font.Font = pygame.font.Font(None, MENU_FONT_SIZE)
-        
+
         # Dynamic Offsets (Start with default left-aligned)
         self.board_offset_x = BOARD_OFFSET_X
         self.board_offset_y = BOARD_OFFSET_Y
@@ -26,15 +26,15 @@ class Renderer:
     def draw_menu(self, options: List[str], selected_option: int) -> List[pygame.Rect]:
         """Dibuja el menú y retorna los rectángulos de las opciones para detección de clic."""
         self.screen.fill(BG_COLOR)
-        
+
         option_rects = []
 
         # Título con sombra
         title_font = pygame.font.Font(None, 80)
-        title_text = title_font.render("Tres en Raya", True, (0, 0, 0)) # Sombra negra
+        title_text = title_font.render("Tres en Raya", True, (0, 0, 0))  # Sombra negra
         title_rect = title_text.get_rect(center=(WIDTH // 2 + 4, HEIGHT // 4 + 4))
         self.screen.blit(title_text, title_rect)
-        
+
         title_text_main = title_font.render("Tres en Raya", True, FONT_COLOR)
         title_rect_main = title_text_main.get_rect(center=(WIDTH // 2, HEIGHT // 4))
         self.screen.blit(title_text_main, title_rect_main)
@@ -43,42 +43,44 @@ class Renderer:
         for i, option in enumerate(options):
             center_x = WIDTH // 2
             center_y = HEIGHT // 2 + i * (FONT_SIZE + 35)
-            
+
             # Texto base
             if i == selected_option:
                 color = MENU_SELECTED_COLOR
                 text_content = f">  {option}  <"
             else:
-                color = (180, 180, 180) # Gris claro
+                color = (180, 180, 180)  # Gris claro
                 text_content = option
 
             text = self.font.render(text_content, True, color)
             rect = text.get_rect(center=(center_x, center_y))
-            
+
             # Dibujar fondo si está seleccionado
             if i == selected_option:
                 bg_rect = rect.inflate(40, 15)
                 # Efecto visual: borde redondeado y color de fondo sutil
                 pygame.draw.rect(self.screen, (68, 71, 90), bg_rect, border_radius=15)
-                pygame.draw.rect(self.screen, MENU_SELECTED_COLOR, bg_rect, 2, border_radius=15)
+                pygame.draw.rect(
+                    self.screen, MENU_SELECTED_COLOR, bg_rect, 2, border_radius=15
+                )
 
             self.screen.blit(text, rect)
-            
+
             # Guardar el rectángulo de colisión (un poco más grande para facilitar el clic)
             hitbox = rect.inflate(40, 20)
             option_rects.append(hitbox)
-            
+
         return option_rects
 
     def draw_turn_indicator(self, turn: int, player_type: str):
         """Dibuja quién está jugando en la parte superior."""
         if player_type == "HUMAN":
             text_str = f"Turno del Humano ({'X' if turn == 1 else 'O'})"
-            color = (139, 233, 253) # Cyan
+            color = (139, 233, 253)  # Cyan
         else:
             text_str = f"Turno de la IA ({'X' if turn == 1 else 'O'})"
-            color = (255, 121, 198) # Pink
-            
+            color = (255, 121, 198)  # Pink
+
         text = self.font.render(text_str, True, color)
         # Centrar en el área superior (encima del tablero)
         # Usamos self.board_offset_x para centrarlo respecto a la tabla visualmente
@@ -90,35 +92,41 @@ class Renderer:
         """Dibuja un símbolo semitransparente (hover)."""
         center_x = col * SQUARE_SIZE + SQUARE_SIZE // 2 + self.board_offset_x
         center_y = row * SQUARE_SIZE + SQUARE_SIZE // 2 + BOARD_OFFSET_Y
-        
+
         # Crear superficie temporal con transparencia
         ghost_surf = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE), pygame.SRCALPHA)
-        
-        alpha = 100 # Transparencia (0-255)
-        
-        if turn == 1: # X
+
+        alpha = 100  # Transparencia (0-255)
+
+        if turn == 1:  # X
             margin = SQUARE_SIZE // 4
             color = (*CROSS_COLOR, alpha)
             start_desc = (margin, margin)
             end_desc = (SQUARE_SIZE - margin, SQUARE_SIZE - margin)
             start_asc = (margin, SQUARE_SIZE - margin)
             end_asc = (SQUARE_SIZE - margin, margin)
-            
+
             pygame.draw.line(ghost_surf, color, start_desc, end_desc, CROSS_WIDTH)
             pygame.draw.line(ghost_surf, color, start_asc, end_asc, CROSS_WIDTH)
-            
-        else: # O
+
+        else:  # O
             color = (*CIRCLE_COLOR, alpha)
             radius = CIRCLE_RADIUS
             center = (SQUARE_SIZE // 2, SQUARE_SIZE // 2)
             pygame.draw.circle(ghost_surf, color, center, radius, CIRCLE_WIDTH)
 
-        self.screen.blit(ghost_surf, (col * SQUARE_SIZE + self.board_offset_x, row * SQUARE_SIZE + BOARD_OFFSET_Y))
+        self.screen.blit(
+            ghost_surf,
+            (
+                col * SQUARE_SIZE + self.board_offset_x,
+                row * SQUARE_SIZE + BOARD_OFFSET_Y,
+            ),
+        )
 
     def draw_grid(self):
         """Dibuja las líneas del tablero y el borde completo."""
         self.screen.fill(BG_COLOR)
-        
+
         # Borde completo del tablero (coincide con el divisor)
         # Rectángulo desplazado
         # Left = self.board_offset_x
@@ -126,7 +134,12 @@ class Renderer:
         # Width = BOARD_WIDTH
         # Height = BOARD_HEIGHT area (HEIGHT - OFFSETS - MARGINS?) actually just square * rows
         board_height = BOARD_ROWS * SQUARE_SIZE
-        pygame.draw.rect(self.screen, SQUARE_HOVER_COLOR, (self.board_offset_x, BOARD_OFFSET_Y, BOARD_WIDTH, board_height), 3)
+        pygame.draw.rect(
+            self.screen,
+            SQUARE_HOVER_COLOR,
+            (self.board_offset_x, BOARD_OFFSET_Y, BOARD_WIDTH, board_height),
+            3,
+        )
 
         # Líneas horizontales
         for i in range(1, BOARD_ROWS):
@@ -154,7 +167,7 @@ class Renderer:
         for row in range(BOARD_ROWS):
             for col in range(BOARD_COLS):
                 center_x = col * SQUARE_SIZE + SQUARE_SIZE // 2 + self.board_offset_x
-                center_y = row * SQUARE_SIZE + SQUARE_SIZE // 2 + BOARD_OFFSET_Y 
+                center_y = row * SQUARE_SIZE + SQUARE_SIZE // 2 + BOARD_OFFSET_Y
 
                 if board_array[row][col] == 1:
                     margin = SQUARE_SIZE // 4
@@ -195,26 +208,32 @@ class Renderer:
         elif win_type == "diag":
             if index == 1:  # Descendente
                 start_pos = (15 + self.board_offset_x, 15 + BOARD_OFFSET_Y)
-                end_pos = (BOARD_WIDTH - 15 + self.board_offset_x, (BOARD_ROWS * SQUARE_SIZE) - 15 + BOARD_OFFSET_Y)
+                end_pos = (
+                    BOARD_WIDTH - 15 + self.board_offset_x,
+                    (BOARD_ROWS * SQUARE_SIZE) - 15 + BOARD_OFFSET_Y,
+                )
             else:  # Ascendente
-                start_pos = (15 + self.board_offset_x, (BOARD_ROWS * SQUARE_SIZE) - 15 + BOARD_OFFSET_Y)
+                start_pos = (
+                    15 + self.board_offset_x,
+                    (BOARD_ROWS * SQUARE_SIZE) - 15 + BOARD_OFFSET_Y,
+                )
                 end_pos = (BOARD_WIDTH - 15 + self.board_offset_x, 15 + BOARD_OFFSET_Y)
 
         # Efecto Neon Glow
         # Dibujamos varias líneas con distinta transparencia y grosor
         glow_colors = [
             (*WIN_LINE_COLOR, 50),  # Ancho, muy transparente
-            (*WIN_LINE_COLOR, 100), # Medio
-            (*WIN_LINE_COLOR, 255), # Centro sólido
+            (*WIN_LINE_COLOR, 100),  # Medio
+            (*WIN_LINE_COLOR, 255),  # Centro sólido
         ]
         widths = [LINE_WIDTH + 15, LINE_WIDTH + 5, LINE_WIDTH]
-        
+
         # Necesitamos una surface con alpha para el glow
         glow_surf = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        
+
         for i in range(3):
             pygame.draw.line(glow_surf, glow_colors[i], start_pos, end_pos, widths[i])
-            
+
         self.screen.blit(glow_surf, (0, 0))
 
     def draw_game_over_text(self, board):
@@ -252,8 +271,20 @@ class Renderer:
 
         # Líneas
         for i in range(1, 3):
-            pygame.draw.line(self.screen, (0, 0, 0), (x, y + i * cell_size), (x + size, y + i * cell_size), 1)
-            pygame.draw.line(self.screen, (0, 0, 0), (x + i * cell_size, y), (x + i * cell_size, y + size), 1)
+            pygame.draw.line(
+                self.screen,
+                (0, 0, 0),
+                (x, y + i * cell_size),
+                (x + size, y + i * cell_size),
+                1,
+            )
+            pygame.draw.line(
+                self.screen,
+                (0, 0, 0),
+                (x + i * cell_size, y),
+                (x + i * cell_size, y + size),
+                1,
+            )
 
         # Símbolos
         font_mini = pygame.font.Font(None, int(cell_size * 1.5))
@@ -264,7 +295,12 @@ class Renderer:
                     symbol = "X" if val == 1 else "O"
                     color = (0, 0, 0)
                     text = font_mini.render(symbol, True, color)
-                    text_rect = text.get_rect(center=(x + c * cell_size + cell_size // 2, y + r * cell_size + cell_size // 2))
+                    text_rect = text.get_rect(
+                        center=(
+                            x + c * cell_size + cell_size // 2,
+                            y + r * cell_size + cell_size // 2,
+                        )
+                    )
                     self.screen.blit(text, text_rect)
 
     def draw_decision_graph(self, graph_data: List[dict]):
@@ -276,20 +312,20 @@ class Renderer:
         graph_start_x = BOARD_WIDTH + BOARD_OFFSET_X
         area_width = WIDTH - graph_start_x
         center_x = graph_start_x + area_width // 2
-        
+
         # Tamaño de los mini tableros
         mini_size = 50
-        
+
         # Nodo raíz (Estado actual - Placeholder o texto)
         root_x = center_x - mini_size // 2
         root_y = 50
-        
+
         # Etiqueta Start
         root_label = self.font.render("Start", True, TEXT_COLOR)
         root_label_rect = root_label.get_rect(center=(center_x, 30))
         self.screen.blit(root_label, root_label_rect)
-        
-        # Nota: No tenemos el estado del tablero raíz pasado explícitamente aquí, 
+
+        # Nota: No tenemos el estado del tablero raíz pasado explícitamente aquí,
         # así que dibujaremos un círculo o caja como "Raíz" simbólica
         root_pos = (center_x, root_y + mini_size // 2)
         pygame.draw.circle(self.screen, NODE_COLOR, root_pos, 10)
@@ -303,31 +339,37 @@ class Renderer:
         # Intentar encajar en columnas/filas si son muchos
         cols = 3
         rows = math.ceil(num_children / cols)
-        
+
         start_y = 150
         spacing_x = area_width // cols
         spacing_y = 100
-        
+
         for i, node in enumerate(graph_data):
             row = i // cols
             col = i % cols
-            
+
             child_x = graph_start_x + (col * spacing_x) + (spacing_x - mini_size) // 2
             child_y = start_y + (row * spacing_y)
-            
+
             # Línea desde raíz
             child_center = (child_x + mini_size // 2, child_y)
             pygame.draw.line(self.screen, LINE_COLOR, root_pos, child_center, 1)
-            
+
             # Dibujar Mini Tablero
-            if 'board' in node:
-                self.draw_mini_board(child_x, child_y, mini_size, node['board'])
-            
+            if "board" in node:
+                self.draw_mini_board(child_x, child_y, mini_size, node["board"])
+
             # Score
-            score = node['score']
-            score_color = POSITIVE_COLOR if score > 0 else (NEGATIVE_COLOR if score < 0 else NEUTRAL_COLOR)
-            
+            score = node["score"]
+            score_color = (
+                POSITIVE_COLOR
+                if score > 0
+                else (NEGATIVE_COLOR if score < 0 else NEUTRAL_COLOR)
+            )
+
             font_small = pygame.font.Font(None, 24)
             score_text = font_small.render(f"Val: {score}", True, score_color)
-            score_rect = score_text.get_rect(center=(child_x + mini_size // 2, child_y + mini_size + 15))
+            score_rect = score_text.get_rect(
+                center=(child_x + mini_size // 2, child_y + mini_size + 15)
+            )
             self.screen.blit(score_text, score_rect)

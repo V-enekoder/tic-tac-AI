@@ -13,6 +13,10 @@ dependencies = [
 dev = [
     "ruff>=0.1.0",
     "pre-commit>=3.7.0",
+    "jupyterlab>=4.0.0",
+    "pandas>=2.1.0",
+    "matplotlib>=3.8.0",
+    "seaborn>=0.13.0",
 ]
 
 [build-system]
