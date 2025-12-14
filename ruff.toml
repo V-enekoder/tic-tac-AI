@@ -1,5 +1,8 @@
 # ruff.toml
-line-length = 88
+
+extend-exclude = ["queries"]
+
+line-length = 80
 
 [lint]
 select = ["E", "F", "I"] # Pycodestyle, Pyflakes, Isort

@@ -10,7 +10,9 @@ class Renderer:
     def __init__(self, screen: pygame.Surface) -> None:
         self.screen: pygame.Surface = screen
         self.font: pygame.font.Font = pygame.font.Font(None, 45)
-        self.menu_font: pygame.font.Font = pygame.font.Font(None, MENU_FONT_SIZE)
+        self.menu_font: pygame.font.Font = pygame.font.Font(
+            None, MENU_FONT_SIZE
+        )
 
         # Offsets Dinámicos
         self.board_offset_x = BOARD_OFFSET_X
@@ -29,19 +31,27 @@ class Renderer:
         else:
             self.board_offset_x = BOARD_OFFSET_X
 
-    def draw_menu(self, options: List[str], selected_option: int) -> List[pygame.Rect]:
+    def draw_menu(
+        self, options: List[str], selected_option: int
+    ) -> List[pygame.Rect]:
         self.screen.fill(BG_COLOR)
 
         option_rects = []
 
         # Título con sombra
         title_font = pygame.font.Font(None, 80)
-        title_text = title_font.render("Tres en Raya", True, (0, 0, 0))  # Sombra negra
-        title_rect = title_text.get_rect(center=(WIDTH // 2 + 4, HEIGHT // 4 + 4))
+        title_text = title_font.render(
+            "Tres en Raya", True, (0, 0, 0)
+        )  # Sombra negra
+        title_rect = title_text.get_rect(
+            center=(WIDTH // 2 + 4, HEIGHT // 4 + 4)
+        )
         self.screen.blit(title_text, title_rect)
 
         title_text_main = title_font.render("Tres en Raya", True, FONT_COLOR)
-        title_rect_main = title_text_main.get_rect(center=(WIDTH // 2, HEIGHT // 4))
+        title_rect_main = title_text_main.get_rect(
+            center=(WIDTH // 2, HEIGHT // 4)
+        )
         self.screen.blit(title_text_main, title_rect_main)
 
         # Opciones del menú
@@ -62,9 +72,15 @@ class Renderer:
 
             if i == selected_option:
                 bg_rect = rect.inflate(40, 15)
-                pygame.draw.rect(self.screen, (68, 71, 90), bg_rect, border_radius=15)
                 pygame.draw.rect(
-                    self.screen, MENU_SELECTED_COLOR, bg_rect, 2, border_radius=15
+                    self.screen, (68, 71, 90), bg_rect, border_radius=15
+                )
+                pygame.draw.rect(
+                    self.screen,
+                    MENU_SELECTED_COLOR,
+                    bg_rect,
+                    2,
+                    border_radius=15,
                 )
 
             self.screen.blit(text, rect)
@@ -111,7 +127,9 @@ class Renderer:
                 color = (*CIRCLE_COLOR, alpha)
                 radius = CIRCLE_RADIUS
                 center = (SQUARE_SIZE // 2, SQUARE_SIZE // 2)
-                pygame.draw.circle(ghost_surf, color, center, radius, CIRCLE_WIDTH)
+                pygame.draw.circle(
+                    ghost_surf, color, center, radius, CIRCLE_WIDTH
+                )
             else:
                 margin = SQUARE_SIZE // 4
                 color = (*CROSS_COLOR, alpha)
@@ -119,8 +137,12 @@ class Renderer:
                 end_desc = (SQUARE_SIZE - margin, SQUARE_SIZE - margin)
                 start_asc = (margin, SQUARE_SIZE - margin)
                 end_asc = (SQUARE_SIZE - margin, margin)
-                pygame.draw.line(ghost_surf, color, start_desc, end_desc, CROSS_WIDTH)
-                pygame.draw.line(ghost_surf, color, start_asc, end_asc, CROSS_WIDTH)
+                pygame.draw.line(
+                    ghost_surf, color, start_desc, end_desc, CROSS_WIDTH
+                )
+                pygame.draw.line(
+                    ghost_surf, color, start_asc, end_asc, CROSS_WIDTH
+                )
 
         else:
             if self.inverted_symbols:
@@ -130,13 +152,19 @@ class Renderer:
                 end_desc = (SQUARE_SIZE - margin, SQUARE_SIZE - margin)
                 start_asc = (margin, SQUARE_SIZE - margin)
                 end_asc = (SQUARE_SIZE - margin, margin)
-                pygame.draw.line(ghost_surf, color, start_desc, end_desc, CROSS_WIDTH)
-                pygame.draw.line(ghost_surf, color, start_asc, end_asc, CROSS_WIDTH)
+                pygame.draw.line(
+                    ghost_surf, color, start_desc, end_desc, CROSS_WIDTH
+                )
+                pygame.draw.line(
+                    ghost_surf, color, start_asc, end_asc, CROSS_WIDTH
+                )
             else:
                 color = (*CIRCLE_COLOR, alpha)
                 radius = CIRCLE_RADIUS
                 center = (SQUARE_SIZE // 2, SQUARE_SIZE // 2)
-                pygame.draw.circle(ghost_surf, color, center, radius, CIRCLE_WIDTH)
+                pygame.draw.circle(
+                    ghost_surf, color, center, radius, CIRCLE_WIDTH
+                )
 
         self.screen.blit(
             ghost_surf,
@@ -183,7 +211,9 @@ class Renderer:
         """Dibuja las X y O en el tablero."""
         for row in range(BOARD_ROWS):
             for col in range(BOARD_COLS):
-                center_x = col * SQUARE_SIZE + SQUARE_SIZE // 2 + self.board_offset_x
+                center_x = (
+                    col * SQUARE_SIZE + SQUARE_SIZE // 2 + self.board_offset_x
+                )
                 center_y = row * SQUARE_SIZE + SQUARE_SIZE // 2 + BOARD_OFFSET_Y
 
                 is_p1 = board_array[row][col] == 1
@@ -203,10 +233,18 @@ class Renderer:
                     start_asc = (center_x - margin, center_y + margin)
                     end_asc = (center_x + margin, center_y - margin)
                     pygame.draw.line(
-                        self.screen, CROSS_COLOR, start_desc, end_desc, CROSS_WIDTH
+                        self.screen,
+                        CROSS_COLOR,
+                        start_desc,
+                        end_desc,
+                        CROSS_WIDTH,
                     )
                     pygame.draw.line(
-                        self.screen, CROSS_COLOR, start_asc, end_asc, CROSS_WIDTH
+                        self.screen,
+                        CROSS_COLOR,
+                        start_asc,
+                        end_asc,
+                        CROSS_WIDTH,
                     )
                 elif draw_o:
                     pygame.draw.circle(
@@ -243,7 +281,10 @@ class Renderer:
                     15 + self.board_offset_x,
                     (BOARD_ROWS * SQUARE_SIZE) - 15 + BOARD_OFFSET_Y,
                 )
-                end_pos = (BOARD_WIDTH - 15 + self.board_offset_x, 15 + BOARD_OFFSET_Y)
+                end_pos = (
+                    BOARD_WIDTH - 15 + self.board_offset_x,
+                    15 + BOARD_OFFSET_Y,
+                )
 
         # Efecto Neon Glow
         glow_colors = [
@@ -256,7 +297,9 @@ class Renderer:
         glow_surf = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
 
         for i in range(3):
-            pygame.draw.line(glow_surf, glow_colors[i], start_pos, end_pos, widths[i])
+            pygame.draw.line(
+                glow_surf, glow_colors[i], start_pos, end_pos, widths[i]
+            )
 
         self.screen.blit(glow_surf, (0, 0))
 
@@ -270,10 +313,16 @@ class Renderer:
             text = f"¡Jugador {board.winner} gana!"
 
         rendered_text = self.font.render(text, True, FONT_COLOR)
-        text_rect = rendered_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+        text_rect = rendered_text.get_rect(
+            center=(WIDTH // 2, HEIGHT // 2 - 50)
+        )
 
-        restart_text = self.font.render("Pulsa 'R' para reiniciar", True, FONT_COLOR)
-        restart_rect = restart_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))
+        restart_text = self.font.render(
+            "Pulsa 'R' para reiniciar", True, FONT_COLOR
+        )
+        restart_rect = restart_text.get_rect(
+            center=(WIDTH // 2, HEIGHT // 2 + 50)
+        )
 
         # Fondo semi-transparente para el texto
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
@@ -392,13 +441,21 @@ class Renderer:
         pygame.draw.rect(self.screen, (30, 30, 40), panel_rect)
 
         pygame.draw.line(
-            self.screen, (100, 100, 150), (board_end_x, 0), (board_end_x, HEIGHT), 2
+            self.screen,
+            (100, 100, 150),
+            (board_end_x, 0),
+            (board_end_x, HEIGHT),
+            2,
         )
 
         if not root_node:
             font = pygame.font.Font(None, 30)
-            text = font.render("Esperando turno de IA...", True, (100, 100, 100))
-            self.screen.blit(text, text.get_rect(center=(panel_center_x, HEIGHT // 2)))
+            text = font.render(
+                "Esperando turno de IA...", True, (100, 100, 100)
+            )
+            self.screen.blit(
+                text, text.get_rect(center=(panel_center_x, HEIGHT // 2))
+            )
             return
 
         font_title = pygame.font.Font(None, 36)
@@ -498,7 +555,10 @@ class Renderer:
             line_color = (255, 255, 0) if is_chosen else (100, 100, 100)
 
             # CALCULO DE COORDENADAS
-            start_pos = (parent_x, int(y - vertical_step + (mini_size // 2) + 10))
+            start_pos = (
+                parent_x,
+                int(y - vertical_step + (mini_size // 2) + 10),
+            )
 
             end_pos = (current_x, int(y - (mini_size // 2)))
             if is_chosen:

@@ -77,10 +77,14 @@ class GameController:
                 return
 
             if self.state == GameState.MENU:
-                self._handle_menu_input(event, self.menu_options, is_main_menu=True)
+                self._handle_menu_input(
+                    event, self.menu_options, is_main_menu=True
+                )
 
             elif self.state == GameState.AI_SELECTION:
-                self._handle_menu_input(event, self.start_options, is_main_menu=False)
+                self._handle_menu_input(
+                    event, self.start_options, is_main_menu=False
+                )
 
             elif self.state == GameState.PLAYING:
                 self._handle_playing_input(event)
@@ -93,11 +97,15 @@ class GameController:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 setattr(
-                    self, selection_attr, (current_selection - 1) % len(options_list)
+                    self,
+                    selection_attr,
+                    (current_selection - 1) % len(options_list),
                 )
             elif event.key == pygame.K_DOWN:
                 setattr(
-                    self, selection_attr, (current_selection + 1) % len(options_list)
+                    self,
+                    selection_attr,
+                    (current_selection + 1) % len(options_list),
                 )
             elif event.key == pygame.K_RETURN:
                 if is_main_menu:
@@ -208,8 +216,14 @@ class GameController:
         if move:
             self.board.make_move(move[0], move[1])
 
-            is_p1_ai = self.player_types[0] in [PlayerType.AI_SLOW, PlayerType.AI_FAST]
-            is_p2_ai = self.player_types[1] in [PlayerType.AI_SLOW, PlayerType.AI_FAST]
+            is_p1_ai = self.player_types[0] in [
+                PlayerType.AI_SLOW,
+                PlayerType.AI_FAST,
+            ]
+            is_p2_ai = self.player_types[1] in [
+                PlayerType.AI_SLOW,
+                PlayerType.AI_FAST,
+            ]
 
             if is_p1_ai and is_p2_ai:
                 self.waiting_for_step = True

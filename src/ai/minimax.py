@@ -74,7 +74,13 @@ def minimax_alpha_beta(
             temp_board = deepcopy(board)
             temp_board.make_move(move[0], move[1])
             score = minimax_alpha_beta(
-                temp_board, depth + 1, alpha, beta, False, counter, maximizing_player_id
+                temp_board,
+                depth + 1,
+                alpha,
+                beta,
+                False,
+                counter,
+                maximizing_player_id,
             )
             best_score = max(score, best_score)
             alpha = max(alpha, best_score)
@@ -87,7 +93,13 @@ def minimax_alpha_beta(
             temp_board = deepcopy(board)
             temp_board.make_move(move[0], move[1])
             score = minimax_alpha_beta(
-                temp_board, depth + 1, alpha, beta, True, counter, maximizing_player_id
+                temp_board,
+                depth + 1,
+                alpha,
+                beta,
+                True,
+                counter,
+                maximizing_player_id,
             )
             best_score = min(score, best_score)
             beta = min(beta, best_score)
@@ -96,7 +108,9 @@ def minimax_alpha_beta(
         return best_score
 
 
-def find_best_move_bruteforce(board: Board) -> Tuple[Tuple[int, int], List[dict]]:
+def find_best_move_bruteforce(
+    board: Board,
+) -> Tuple[Tuple[int, int], List[dict]]:
     best_score = -math.inf
     best_move = None
     graph_data = []
@@ -113,7 +127,9 @@ def find_best_move_bruteforce(board: Board) -> Tuple[Tuple[int, int], List[dict]
         temp_board = deepcopy(board)
         temp_board.make_move(move[0], move[1])
 
-        score = minimax_bruteforce(temp_board, 0, False, {"nodes": 0}, ai_player_id)
+        score = minimax_bruteforce(
+            temp_board, 0, False, {"nodes": 0}, ai_player_id
+        )
 
         graph_data.append(
             {"move": move, "score": score, "board": temp_board.board.tolist()}
@@ -124,7 +140,9 @@ def find_best_move_bruteforce(board: Board) -> Tuple[Tuple[int, int], List[dict]
     return best_move, graph_data
 
 
-def find_best_move_alpha_beta(board: Board) -> Tuple[Tuple[int, int], List[dict]]:
+def find_best_move_alpha_beta(
+    board: Board,
+) -> Tuple[Tuple[int, int], List[dict]]:
     best_score = -math.inf
     best_move = None
     graph_data = []
@@ -142,7 +160,13 @@ def find_best_move_alpha_beta(board: Board) -> Tuple[Tuple[int, int], List[dict]
         temp_board.make_move(move[0], move[1])
 
         score = minimax_alpha_beta(
-            temp_board, 0, -math.inf, math.inf, False, {"nodes": 0}, ai_player_id
+            temp_board,
+            0,
+            -math.inf,
+            math.inf,
+            False,
+            {"nodes": 0},
+            ai_player_id,
         )
 
         graph_data.append(
@@ -155,7 +179,11 @@ def find_best_move_alpha_beta(board: Board) -> Tuple[Tuple[int, int], List[dict]
 
 
 def get_focused_tree(
-    board: Board, ai_player_id: int, scoring_function, current_depth=0, max_viz_depth=3
+    board: Board,
+    ai_player_id: int,
+    scoring_function,
+    current_depth=0,
+    max_viz_depth=3,
 ):
     if board.game_over or current_depth >= max_viz_depth:
         score = 0
@@ -254,7 +282,9 @@ def find_best_move_and_viz(board: Board, use_alpha_beta: bool):
 
     scoring_func = minimax_alpha_beta if use_alpha_beta else minimax_bruteforce
 
-    root_node = get_focused_tree(board, ai_player_id, scoring_func, max_viz_depth=3)
+    root_node = get_focused_tree(
+        board, ai_player_id, scoring_func, max_viz_depth=3
+    )
 
     best_move = root_node.get("best_move_coordinate")
 
