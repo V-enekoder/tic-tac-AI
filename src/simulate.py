@@ -83,7 +83,6 @@ def main():
 
     total_sims = len(experiment_batches) * NUM_SIMULATIONS_PER_BATCH
     print(f"Iniciando {total_sims} simulaciones en {len(experiment_batches)} lotes...")
-
     sim_counter = 0
     for batch_name, (p1, p2) in experiment_batches.items():
         print(

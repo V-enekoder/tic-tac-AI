@@ -1,0 +1,47 @@
+name: Build Executables
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: TicTacToeAI_Linux
+            exe_name: TicTacToeAI
+          - os: windows-latest
+            artifact_name: TicTacToeAI_Windows
+            exe_name: TicTacToeAI.exe
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        run: |
+          pip install uv
+
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Build with PyInstaller
+        # El separador de add-data cambia según el SO (; para Windows, : para Linux)
+        run: |
+          uv run pyinstaller --noconfirm --onefile --windowed --name "TicTacToeAI" --clean --add-data "src${{ runner.os == 'Windows' && ';' || ':' }}src" src/main.py
+
+      - name: Upload Artifacts
+        uses: actions/upload_artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: dist/${{ matrix.exe_name }}
